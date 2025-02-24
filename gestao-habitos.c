@@ -62,9 +62,9 @@ char buffer[16];
 
 // Configuracao de intervalos
 #define POMODORO_INTERVALO 3000
-#define AGUA_INTERVALO 60000
-#define ALIMENTACAO_INTERVALO 30000
-#define EXERCICIO_INTERVALO 15000
+#define AGUA_INTERVALO 15000
+#define ALIMENTACAO_INTERVALO 60000
+#define EXERCICIO_INTERVALO 25000
 
 // Funcoes para controle das matriz de leds
 
@@ -443,21 +443,21 @@ int main() {
     sleep_ms(2000);
 
     ssd1306_clear(&oled);
-    sprintf(buffer, "%d SEC", (AGUA_INTERVALO / 1000));
+    sprintf(buffer, "%d SEGs", (AGUA_INTERVALO / 1000));
     ssd1306_draw_string(&oled, 25, 10, 1, "Agua:");
     ssd1306_draw_string(&oled, 25, 20, 2, buffer);
     ssd1306_show(&oled);
     sleep_ms(3000);
 
     ssd1306_clear(&oled);
-    sprintf(buffer, "%d SEC", (EXERCICIO_INTERVALO / 1000));
+    sprintf(buffer, "%d SEGs", (EXERCICIO_INTERVALO / 1000));
     ssd1306_draw_string(&oled, 25, 10, 1, "Exercicios:");
     ssd1306_draw_string(&oled, 25, 20, 2, buffer);
     ssd1306_show(&oled);
     sleep_ms(3000);
 
     ssd1306_clear(&oled);
-    sprintf(buffer, "%d SEC", (ALIMENTACAO_INTERVALO / 1000));
+    sprintf(buffer, "%d SEGs", (ALIMENTACAO_INTERVALO / 1000));
     ssd1306_draw_string(&oled, 25, 10, 1, "Refeicoes:");
     ssd1306_draw_string(&oled, 25, 20, 2, buffer);
     ssd1306_show(&oled);
