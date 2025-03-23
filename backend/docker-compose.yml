@@ -1,0 +1,31 @@
+services:
+  backend:
+    build: .
+    container_name: backend-container
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: "5432"
+      DATABASE_USER: admin
+      DATABASE_PASSWORD: admin
+      DATABASE_DB: tracker-habitos-db
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+
+  db:
+    image: postgres:13
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: tracker-habitos-db
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+      - ./habitos-db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"

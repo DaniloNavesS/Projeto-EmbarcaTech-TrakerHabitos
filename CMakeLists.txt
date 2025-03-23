@@ -25,11 +25,11 @@ endif()
 # ====================================================================================
 set(PICO_BOARD pico_w CACHE STRING "Board type")
 
+
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
 project(gestao-habitos C CXX ASM)
-
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
@@ -49,22 +49,19 @@ pico_enable_stdio_usb(gestao-habitos 1)
 
 # Add the standard library to the build
 target_link_libraries(gestao-habitos
-        pico_stdlib 
+        pico_stdlib)
+
+# Add the standard include files to the build
+target_include_directories(gestao-habitos PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR})
+
+target_link_libraries(gestao-habitos
         hardware_i2c
         hardware_adc
         hardware_pio
         hardware_clocks
-        hardware_pwm)
-
-# Add the standard include files to the build
-target_include_directories(gestao-habitos PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}
-)
-
-# Add any user requested libraries
-target_link_libraries(gestao-habitos 
-        
-        )
+        hardware_pwm
+        pico_cyw43_arch_lwip_threadsafe_background)
 
 pico_add_extra_outputs(gestao-habitos)
 

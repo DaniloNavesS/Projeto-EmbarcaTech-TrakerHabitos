@@ -39,6 +39,16 @@
     "files.associations": {
         "ssd1306.h": "c",
         "i2c.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "ws2818b.pio.h": "c",
+        "cyw43_arch.h": "c",
+        "sockets.h": "c",
+        "netdb.h": "c",
+        "api.h": "c",
+        "pwm.h": "c",
+        "adc.h": "c",
+        "opt.h": "c",
+        "timer.h": "c",
+        "sys_arch.h": "c"
     }
 }
