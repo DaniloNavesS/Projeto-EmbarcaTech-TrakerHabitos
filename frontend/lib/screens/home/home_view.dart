@@ -98,7 +98,7 @@ class _HomeViewState extends State<HomeView> {
                 return Column(
                   children: [
                     _buildTile(
-                      'Beber Água',
+                      'Bebeu Água',
                       currentHabit.contadorAgua,
                       const Color(0xFF379392),
                       Icons.local_drink,
