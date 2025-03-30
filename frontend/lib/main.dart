@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:frontend/screens/home/home_view_model.dart';
 
 Future<void> main() async {
-  final habitoService = HabitoService(baseUrl: 'http://192.168.15.14:3000');
+  final habitoService = HabitoService(baseUrl: 'http://192.168.0.173:3000');
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('pt_BR', null);
   runApp(
