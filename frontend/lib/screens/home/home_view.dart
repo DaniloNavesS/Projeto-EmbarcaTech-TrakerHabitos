@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../model/habitos_model.dart';
 import '../home/home_view_model.dart';
+import 'package:easy_date_timeline/easy_date_timeline.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -13,31 +14,58 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  DateTime _selectedValue = DateTime(DateTime.now().year, DateTime.now().month, 1);
+  final EasyDatePickerController _controller = EasyDatePickerController();
+  DateTime _selectedValue = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.jumpToCurrentDate(); // Centraliza a data atual
+    });
+  }
 
   Widget _buildTile(String title, int value, Color color, IconData icon) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      tileColor: const Color(0xFF222222),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      tileColor: Color(0xFFf5f5f5),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      leading: Icon(icon, color: Colors.white),
       title: Text(
         title,
         style: const TextStyle(
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: Color(0xFF222222),
         ),
       ),
-      trailing: CircleAvatar(
-        radius: 20,
-        backgroundColor: color,
-        child: Text(
-          value.toString(),
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+
+      trailing: Container(
+        width: 80,
+        height: 40,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 20),
+            SizedBox(width: 6),
+            Text(
+              value.toString(),
+              style: TextStyle(
+                fontSize: 18,
+                color: color,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -46,35 +74,148 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F9F9),
+      backgroundColor: Color(0xFFFFFFFF),
       body: Padding(
         padding: const EdgeInsets.all(34),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            const SizedBox(height: 20),
-            DatePicker(
-              DateTime(DateTime.now().year, DateTime.now().month, 1),
-              initialSelectedDate: _selectedValue,
-              selectionColor: const Color(0xFF222222),
-              selectedTextColor: Colors.white,
-              locale: "pt_BR",
-              onDateChange: (date) {
-                setState(() {
-                  _selectedValue = date;
-                });
-              },
+            SizedBox(height: 20),
+            AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              title: const Text(
+                'Meus Hábitos',
+                style: TextStyle(
+                  color: Color(0xFF222222),
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              centerTitle: true,
             ),
-            const SizedBox(height: 20),
-            Text(
-              DateFormat(
-                "dd 'de' MMMM 'de' yyyy",
-                "pt_BR",
-              ).format(_selectedValue),
-              style: const TextStyle(fontSize: 18),
+
+            Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: ColorScheme.fromSwatch(
+                  backgroundColor: Color(0xFFf5f5f5), // Cor de fundo do tema
+                ).copyWith(primary: Color(0xFF222222)), //Cor primária do tema
+              ),
+              child: EasyTheme(
+                data: EasyTheme.of(context).copyWith(
+                  monthBackgroundColor: WidgetStateProperty.resolveWith((
+                    states,
+                  ) {
+                    if (states.contains(WidgetState.selected)) {
+                      return Color(
+                        0xFF222222,
+                      ); // Cor de fundo do mês selecionado
+                    }
+                    return Colors.transparent; // Cor de fundo padrão
+                  }),
+
+                  monthForegroundColor: WidgetStateProperty.resolveWith((
+                    states,
+                  ) {
+                    if (states.contains(WidgetState.selected)) {
+                      return Colors.white; // Cor do texto do mês selecionado
+                    }
+                    return Color(0xFF222222); // Cor do texto padrão
+                  }),
+
+                  monthBorder: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.selected)) {
+                      return const BorderSide(color: Colors.transparent); 
+                    }
+                    return const BorderSide(color: Colors.transparent);
+                  }),
+
+                  currentMonthBackgroundColor: WidgetStateProperty.resolveWith((
+                    states,
+                  ) {
+                    if (states.contains(WidgetState.selected)) {
+                      return Color(0xFF222222); // Cor de fundo do mês atual
+                    }
+                    return Colors.transparent; // Cor de fundo padrão
+                  }),
+
+                  currentMonthForegroundColor: WidgetStateProperty.resolveWith((
+                    states,
+                  ) {
+                    if (states.contains(WidgetState.selected)) {
+                      return Colors.white; // Cor do texto do mês selecionado
+                    }
+                    return Color(0xFF222222); // Cor do texto padrão
+                  }),
+                  currentMonthBorder: WidgetStateProperty.all(
+                    const BorderSide(color: Color(0xFF222222)), // Cor da borda do mês atual
+                  ),
+
+                  dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.selected)) {
+                      return Color(0xFF222222); // Cor de fundo do dia selecionado
+                    } else if (states.contains(WidgetState.disabled)) {
+                      return Color(0xFFf5f5f5); // Cor de fundo do dia desabilitado
+                    }
+                    return Color(0xFFf5f5f5); // Cor de fundo padrão
+                  }),
+                  dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.selected)) {
+                      return Colors.white;
+                    }
+                    return Color(0xFF222222); // Cor do texto padrão
+                  }),
+                  dayBorder: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.selected)) {
+                      return const BorderSide(color: Colors.transparent);
+                    }
+                    return const BorderSide(color: Colors.transparent);
+                  }),
+                  dayShape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  currentDayBackgroundColor: WidgetStateProperty.resolveWith((
+                    states,
+                  ) {
+                    if (states.contains(WidgetState.selected)) {
+                      return Color(0xFF222222); // Cor de fundo do dia atual
+                    }
+                    return Colors.transparent;
+                  }),
+                  currentDayForegroundColor: WidgetStateProperty.resolveWith((
+                    states,
+                  ) {
+                    if (states.contains(WidgetState.selected)) {
+                      return Colors.white; // Cor do texto do dia atual
+                    }
+                    return Color(0xFF222222); // Cor do texto padrão
+                  }),
+                  currentDayBorder: WidgetStateProperty.all(
+                    const BorderSide(color: Color(0xFF222222)), // Cor da borda do dia atual
+                  ),
+                ),
+                child: EasyDateTimeLinePicker(
+                  controller: _controller,
+                  locale: const Locale("pt", "BR"),
+                  focusedDate: _selectedValue,
+                  firstDate: DateTime(
+                    DateTime.now().year,
+                    DateTime.now().month,
+                    1,
+                  ),
+                  lastDate: DateTime(2030, 3, 18),
+                  onDateChange: (date) {
+                    setState(() {
+                      _selectedValue = date;
+                    });
+                  },
+                ),
+              ),
             ),
+
             const SizedBox(height: 20),
-            // Consumer para atualizar os ListTile quando os dados mudarem
             Consumer<HabitoViewModel>(
               builder: (context, habitoViewModel, child) {
                 final formattedDate = DateFormat(
@@ -97,32 +238,33 @@ class _HomeViewState extends State<HomeView> {
 
                 return Column(
                   children: [
+                    SizedBox(height: 20),
                     _buildTile(
-                      'Bebeu Água',
+                      'Copos de Água Bebidos',
                       currentHabit.contadorAgua,
-                      const Color(0xFF379392),
-                      Icons.local_drink,
+                      Color(0xFF3A86FF),
+                      Symbols.water_drop,
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 20),
                     _buildTile(
-                      'Sessões Pomodoro',
+                      'Sessões Pomodoro Concluídas',
                       currentHabit.contadorPomodoro,
-                      const Color(0xFFC30232),
-                      Icons.timer,
+                      Color(0xFFE63946),
+                      Symbols.alarm,
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 20),
                     _buildTile(
                       'Pausas para Exercícios',
                       currentHabit.contadorExercicio,
-                      const Color(0xFF7067CF),
-                      Icons.fitness_center,
+                      Color(0xFF06D6A0),
+                      Symbols.exercise,
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 20),
                     _buildTile(
-                      'Refeições Feitas',
+                      'Refeições Saudáveis Feitas',
                       currentHabit.contadorRefeicao,
-                      const Color(0xFFFF8811),
-                      Icons.fastfood,
+                      Color(0xFFF4A261),
+                      Symbols.lunch_dining,
                     ),
                   ],
                 );
